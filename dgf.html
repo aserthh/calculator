@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WINSTREAK MODZ — CUSTOM</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #090a0f;
+  --panel: rgba(255, 255, 255, 0.03);
+  --border: rgba(255, 255, 255, 0.08);
+  --primary: #3ddc84;
+  --primary-glow: rgba(61, 220, 132, 0.2);
+  --text-main: #ffffff;
+  --text-muted: #8a8d98;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--text-main);font-family:'Inter',sans-serif;overflow-x:hidden;scroll-behavior:smooth;}
+
+#pts{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.6;}
+
+/* TOPBAR ESTILIZADA COM BLUR */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:60px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;
+  background:rgba(9, 10, 15, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.tlogo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.15em;color:#fff; text-shadow: 0 0 10px rgba(255,255,255,0.2);}
+.tonline{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 16px;border:1px solid var(--border);border-radius:999px;
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.08em;
+  background: rgba(0,0,0,0.2);
+}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--primary);box-shadow:0 0 10px var(--primary);animation:blink 2s ease infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+.page{
+  position:relative;z-index:1;
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:100px 24px 80px;
+}
+
+.container{width:100%;max-width:680px;}
+
+/* PROGRESSO SUAVE */
+.prog-wrap{margin-bottom:56px}
+.prog-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.prog-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase}
+.prog-steps{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.1em}
+.prog-bar{height:3px;background:var(--border);border-radius:3px;position:relative;overflow:hidden;}
+.prog-fill{height:100%;background:linear-gradient(90deg, #fff, var(--primary));position:absolute;top:0;left:0;transition:width 0.6s cubic-bezier(0.65, 0, 0.05, 1); border-radius:3px; box-shadow: 0 0 10px var(--primary-glow);}
+
+.step{display:none; opacity:0; transform: translateY(20px); transition: all 0.4s ease;}
+.step.on{display:block; opacity:1; transform: translateY(0); animation: smoothRise 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;}
+@keyframes smoothRise{
+  from{opacity:0; transform:translateY(20px) scale(0.98)}
+  to{opacity:1; transform:translateY(0) scale(1)}
+}
+
+.step-tag{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--primary);letter-spacing:.2em;text-transform:uppercase;
+  margin-bottom:16px; font-weight: 500;
+}
+.step-q{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:clamp(48px,8vw,76px);
+  line-height:.95;letter-spacing:.02em;
+  color:#fff;margin-bottom:16px;
+  text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+.step-hint{
+  font-size:14px;color:var(--text-muted);
+  font-family:'JetBrains Mono',monospace;
+  letter-spacing:.02em;margin-bottom:40px;
+}
+.step-hint b{color:#fff; font-weight:500;}
+
+/* BOTÕES SIM/NÃO MODERNOS */
+.yn{display:flex;gap:12px;margin-bottom:40px}
+.ynb{
+  flex: 1;
+  padding:16px 36px;
+  border:1px solid var(--border);border-radius:8px;
+  background:var(--panel);color:var(--text-muted);
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  letter-spacing:.14em;text-transform:uppercase;
+  cursor:pointer;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.ynb:hover{border-color:rgba(255,255,255,0.3);color:#fff; background:rgba(255,255,255,0.05); transform: translateY(-2px);}
+.ynb.on{background:#fff;border-color:#fff;color:#000; box-shadow: 0 4px 15px rgba(255,255,255,0.15);}
+
+.amt{animation:smoothRise 0.4s ease forwards;margin-bottom:40px}
+.amt-lbl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase;margin-bottom:16px}
+.ctrl{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden; background:var(--panel);}
+.ctrl button{
+  width:50px;height:50px;background:transparent;border:none;color:var(--text-muted);
+  font-size:22px;cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.ctrl button:hover{background:rgba(255,255,255,0.05);color:#fff}
+.ctrl input{
+  width:120px;height:50px;background:transparent;border:none;
+  border-left:1px solid var(--border);border-right:1px solid var(--border);
+  color:#fff;font-family:'JetBrains Mono',monospace;
+  font-size:22px;font-weight:500;text-align:center;outline:none;
+}
+.ctrl input::-webkit-inner-spin-button{-webkit-appearance:none}
+.cost-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:16px;padding:8px 16px;
+  border:1px solid var(--border);border-radius:6px; background: rgba(0,0,0,0.3);
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);letter-spacing:.04em;
+}
+.cost-tag span{color:#fff;font-weight:600;}
+
+/* BRINDE BADGE COM GLOW */
+.brinde-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:12px;padding:8px 16px;
+  border:1px solid rgba(61,220,132,0.3);border-radius:6px;background:var(--primary-glow);
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--primary);letter-spacing:.04em;
+  box-shadow: 0 0 10px rgba(61,220,132,0.05);
+}
+
+/* PAINEL FIXO DE BRINDES */
+.brinde-panel{
+  position:fixed;left:20px;top:50%;transform:translateY(-50%);
+  z-index:90;width:180px;
+  background:rgba(9,10,15,0.85);
+  border:1px solid rgba(61,220,132,0.2);border-radius:12px;
+  padding:14px 14px 12px;
+  backdrop-filter:blur(12px);
+  display:flex;flex-direction:column;gap:7px;
+}
+.bp-title{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:var(--primary);letter-spacing:.18em;text-transform:uppercase;
+  margin-bottom:4px;opacity:0.8;
+}
+.bp-row{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 8px;border-radius:7px;
+  border:1px solid transparent;
+  transition:all 0.3s ease;
+}
+.bp-row.active{
+  background:rgba(61,220,132,0.08);
+  border-color:rgba(61,220,132,0.25);
+}
+.bp-mil{
+  font-family:'Bebas Neue',sans-serif;font-size:13px;
+  color:var(--text-muted);letter-spacing:.05em;
+  min-width:32px;flex-shrink:0;
+  transition:color 0.3s;
+}
+.bp-row.active .bp-mil{color:var(--primary);}
+.bp-gift{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  color:rgba(255,255,255,0.3);line-height:1.4;
+  transition:color 0.3s;
+}
+.bp-row.active .bp-gift{color:rgba(255,255,255,0.7);}
+
+@media(max-width:900px){
+  .brinde-panel{display:none;}
+}
+
+/* SLIDERS */
+.slider-wrap{margin-bottom:20px;}
+.slider-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;}
+.slider-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.15em;text-transform:uppercase;}
+.slider-input-box{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:rgba(0,0,0,0.3);
+}
+.slider-input-box input[type="number"]{
+  width:70px;background:transparent;border:none;outline:none;
+  color:#fff;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;
+  text-align:right;
+}
+.slider-input-box input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none}
+.slider-input-box .unit{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);}
+.slider-track{position:relative;height:36px;display:flex;align-items:center;}
+input[type="range"].custom-range{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:3px;border-radius:3px;outline:none;cursor:pointer;
+  background:linear-gradient(90deg, var(--primary) var(--pct,0%), var(--border) var(--pct,0%));
+}
+input[type="range"].custom-range::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:#fff;border:2px solid var(--primary);cursor:pointer;
+  box-shadow:0 0 10px rgba(61,220,132,0.4);transition:transform .15s,box-shadow .15s;
+}
+input[type="range"].custom-range::-webkit-slider-thumb:hover{transform:scale(1.2);box-shadow:0 0 16px rgba(61,220,132,0.6);}
+input[type="range"].custom-range::-moz-range-thumb{
+  width:20px;height:20px;border-radius:50%;
+  background:#fff;border:2px solid var(--primary);cursor:pointer;
+}
+.slider-ticks{display:flex;justify-content:space-between;margin-top:6px;}
+.slider-tick{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--text-muted);letter-spacing:.04em;}
+
+.level-precise{
+  margin-top:12px;display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border:1px solid var(--border);border-radius:8px;
+  background:rgba(0,0,0,0.2);
+}
+.level-precise label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;flex-shrink:0;}
+.level-precise input[type="number"]{
+  flex:1;
+  background:#fff;
+  border:none;border-radius:6px;outline:none;
+  color:#000;font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;
+  text-align:center;padding:6px 8px;
+  max-width:120px;
+}
+.level-precise input[type="number"]::-webkit-inner-spin-button{-webkit-appearance:none}
+.level-stepper{display:flex;gap:6px;}
+.level-stepper button{
+  width:32px;height:32px;border:1px solid var(--border);border-radius:6px;
+  background:var(--panel);color:var(--text-muted);font-size:16px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.level-stepper button:hover{background:rgba(255,255,255,0.07);color:#fff;}
+
+/* EXTRAS CHECKLIST */
+.extras-list{display:flex;flex-direction:column;gap:12px;margin-bottom:40px}
+.extra-item{
+  display:flex;align-items:center;gap:18px;
+  padding:18px 20px;border:1px solid var(--border);border-radius:10px;
+  background:var(--panel);cursor:pointer;transition:all 0.3s ease;
+}
+.extra-item:hover{border-color:rgba(255,255,255,0.2); transform: translateY(-2px);}
+.extra-item.on{border-color:var(--primary);background:rgba(61,220,132,0.03); box-shadow: 0 4px 15px rgba(61,220,132,0.05);}
+.extra-cb{
+  width:24px;height:24px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:transparent;transition:all .2s;
+}
+.extra-item.on .extra-cb{background:var(--primary);border-color:var(--primary);color:#000}
+.extra-info{flex:1}
+.extra-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.06em;color:#fff; transition: color 0.3s;}
+.extra-item.on .extra-name{color:var(--primary);}
+.extra-desc{font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;letter-spacing:.02em;margin-top:4px}
+.extra-price{font-family:'Bebas Neue',sans-serif;font-size:28px;color:#fff;letter-spacing:.04em;white-space:nowrap}
+.extra-price sup{font-size:14px;vertical-align:super; color:var(--text-muted);}
+
+/* UNLOCK CARDS */
+.ucards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px}
+.uc{
+  padding:24px 22px;border:1px solid var(--border);border-radius:10px;
+  background:var(--panel);cursor:pointer;transition:all 0.3s ease;position:relative;
+}
+.uc:hover{border-color:rgba(255,255,255,0.2); transform:translateY(-4px);}
+.uc.on{border-color:var(--primary);background:rgba(61,220,132,0.05); box-shadow: 0 8px 20px rgba(61,220,132,0.08);}
+.uc-tick{
+  position:absolute;top:16px;right:16px;
+  width:24px;height:24px;border:1px solid rgba(255,255,255,0.2);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:transparent;transition:all .2s;
+}
+.uc.on .uc-tick{background:var(--primary);border-color:var(--primary);color:#000}
+.uc-name{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:.06em;color:#fff;margin-bottom:6px; transition: color 0.3s;}
+.uc.on .uc-name{color:var(--primary);}
+.uc-desc{font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-bottom:20px;letter-spacing:.02em; line-height: 1.5;}
+.uc-price{font-family:'Bebas Neue',sans-serif;font-size:38px;color:#fff;letter-spacing:.04em}
+.uc-price sup{font-size:16px;vertical-align:super; color:var(--text-muted);}
+
+.disc-box{
+  padding:18px 20px;margin-bottom:28px;
+  border-left:3px solid #5865F2;background:rgba(88,101,242,.08);
+  border-radius:0 8px 8px 0;
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:#ccc;line-height:1.8;letter-spacing:.02em;
+}
+.disc-box b{color:#fff;}
+.disc-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px}
+.disc-join{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 26px;background:#5865F2;border:none;border-radius:8px;
+  color:#fff;font-family:'JetBrains Mono',monospace;font-size:12px; font-weight: 500;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:all .2s;
+  box-shadow: 0 4px 15px rgba(88,101,242,0.3);
+}
+.disc-join:hover{background:#4752c4; transform: translateY(-2px);}
+
+.tinput{
+  width:100%;padding:18px 20px;
+  background:var(--panel);border:1px solid var(--border);border-radius:8px;
+  color:#fff;font-family:'Inter',sans-serif;font-size:16px;
+  outline:none;transition:all .3s;margin-bottom:32px;
+}
+.tinput:focus{border-color:var(--primary); background:rgba(0,0,0,0.3); box-shadow: 0 0 0 3px var(--primary-glow);}
+.tinput::placeholder{color:var(--text-muted)}
+
+.nxtbtn{
+  display:inline-flex;align-items:center;gap:12px;
+  padding:16px 36px;background:#fff;border:none;border-radius:8px;
+  color:#000;font-family:'JetBrains Mono',monospace;font-size:12px; font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;cursor:pointer;transition:all .3s ease;
+  box-shadow: 0 4px 15px rgba(255,255,255,0.15);
+}
+.nxtbtn:hover{background:#f0f0f0; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,255,255,0.25);}
+.nxtbtn:active{transform: translateY(0);}
+.nxtbtn .ar{transition:.3s transform; font-size: 14px;}
+.nxtbtn:hover .ar{transform:translateX(6px)}
+.nxtbtn.wide{width:100%;justify-content:center;font-size:13px;padding:18px}
+
+.total-badge{
+  position:fixed;bottom:32px;right:32px;z-index:90;
+  padding:12px 24px;
+  background:rgba(9,10,15,0.9);border:1px solid var(--border);border-radius:12px;
+  display:flex;flex-direction:column;align-items:flex-end;
+  backdrop-filter: blur(10px); box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  transition: transform 0.3s ease;
+}
+.total-badge:hover{transform: translateY(-4px);}
+.tb-label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--primary);letter-spacing:.15em;text-transform:uppercase;margin-bottom:4px}
+.tb-val{font-family:'Bebas Neue',sans-serif;font-size:32px;color:#fff;letter-spacing:.04em;line-height:1}
+
+.sumlist{border-top:1px solid var(--border);margin-bottom:40px; padding-top: 10px;}
+.sumrow{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.03);
+}
+.srk{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase}
+.srv{font-family:'JetBrains Mono',monospace;font-size:12px;color:#ccc}
+.srp{font-family:'Bebas Neue',sans-serif;font-size:20px;color:#fff;letter-spacing:.06em}
+.sum-total{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:24px 0 0;margin-top:12px;
+}
+.st-label{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--primary);letter-spacing:.18em;text-transform:uppercase}
+.st-val{font-family:'Bebas Neue',sans-serif;font-size:52px;color:#fff;letter-spacing:.04em;line-height:1; text-shadow: 0 0 20px rgba(255,255,255,0.2);}
+
+.success{display:none}
+.success.on{display:flex; flex-direction:column; align-items:flex-start; animation:smoothRise .6s cubic-bezier(0.16, 1, 0.3, 1) forwards}
+.suc-tag{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--primary);letter-spacing:.2em;text-transform:uppercase;margin-bottom:20px}
+.suc-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,10vw,96px);line-height:.9;color:#fff;letter-spacing:.02em;margin-bottom:32px; text-shadow: 0 4px 30px rgba(61,220,132,0.3);}
+.suc-id{
+  display:inline-block;padding:12px 24px;margin-bottom:28px;
+  background: var(--panel); border:1px solid var(--border);border-radius:8px;
+  font-family:'JetBrains Mono',monospace;font-size:16px;letter-spacing:.14em;color:#fff;
+}
+.suc-id small{display:block;font-size:10px;color:var(--text-muted);letter-spacing:.2em;margin-bottom:6px}
+.suc-txt{font-size:15px;color:var(--text-muted);line-height:1.9;max-width:500px;margin-bottom:40px}
+.suc-txt b{color:#fff}
+
+#loader{
+  display:none;position:fixed;inset:0;background:rgba(9,10,15,0.9); backdrop-filter: blur(5px);
+  z-index:999;align-items:center;justify-content:center;flex-direction:column;gap:20px;
+}
+#loader.on{display:flex; animation: fadeIn 0.3s ease;}
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.spin{width:36px;height:36px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--primary);border-radius:50%;animation:sp .8s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.spin-lbl{font-family:'JetBrains Mono',monospace;font-size:11px;color:#fff;letter-spacing:.2em;text-transform:uppercase}
+
+@media(max-width:600px){
+  .topbar{padding:0 20px}
+  .ucards{grid-template-columns:1fr}
+  .total-badge{bottom:20px;right:20px; padding:10px 16px;}
+  .page{padding: 80px 20px 60px;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="pts"></canvas>
+<div id="loader"><div class="spin"></div><div class="spin-lbl">Enviando pedido</div></div>
+
+<header class="topbar">
+  <div class="tlogo">Winstreak Modz</div>
+  <div class="tonline"><span class="dot"></span>Online</div>
+</header>
+
+<div class="total-badge">
+  <div class="tb-label">// Total</div>
+  <div class="tb-val">R$<span id="tbv">0,00</span></div>
+</div>
+
+<div class="page">
+<div class="container">
+
+  <div class="prog-wrap">
+    <div class="prog-top">
+      <div class="prog-label">// Plano Custom</div>
+      <div class="prog-steps" id="pgsteps">Etapa 1 de 9</div>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="pgfill" style="width:11.11%"></div></div>
+  </div>
+
+  <div class="step on" id="s1">
+    <div class="step-tag">// 01 — Dinheiro</div>
+    <div class="step-q">Você precisa<br>de dinheiro?</div>
+    <div class="step-hint"><b>R$ 0,50</b> por milhão adicionado</div>
+
+
+    <div class="yn">
+      <button class="ynb" id="s1y" onclick="p1('sim')">Sim</button>
+      <button class="ynb" id="s1n" onclick="p1('nao')">Não</button>
+    </div>
+    <div id="s1x" class="amt" style="display:none">
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <div class="slider-label">Quantos milhões?</div>
+          <div class="slider-input-box">
+            <input type="number" id="diI" value="1" min="1" max="100" oninput="onDiInput()">
+            <span class="unit">M</span>
+          </div>
+        </div>
+        <div class="slider-track">
+          <input type="range" class="custom-range" id="diSlider" min="1" max="100" value="1" oninput="onDiSlider()">
+        </div>
+        <div class="slider-ticks">
+          <span class="slider-tick">1M</span>
+          <span class="slider-tick">25M</span>
+          <span class="slider-tick">50M</span>
+          <span class="slider-tick">75M</span>
+          <span class="slider-tick">100M</span>
+        </div>
+      </div>
+      <div><div class="cost-tag">Custo estimado: <span id="diC">R$ 0,50</span></div></div>
+      <div class="brinde-badge" id="brindeVe" style="display:none">🎁 <span id="brindeVeTxt"></span></div>
+      <div style="margin-top:20px;padding:16px 20px;border-left:3px solid #f0a500;background:rgba(240,165,0,.08);border-radius:0 8px 8px 0;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted);line-height:1.7;letter-spacing:.02em;">
+        ⚠️ <b style="color:#f0a500; font-weight:600;">Aviso:</b> A adição de dinheiro irá incluir automaticamente o <b style="color:#fff">Kosatka</b>, <b style="color:#fff">Fliperama</b> e <b style="color:#fff">Apartamento aleatório</b> em sua conta.
+      </div>
+    </div>
+    <button class="nxtbtn" id="s1nx" style="display:none" onclick="go(2)">Próximo <span class="ar">→</span></button>
+  </div>
+
+  <div class="step" id="s2">
+    <div class="step-tag">// 02 — Veículos</div>
+    <div class="step-q" id="s2q">Você precisa<br>de veículos?</div>
+    <div class="step-hint" id="s2hint"><b>R$ 1,00</b> por veículo adicionado</div>
+    <div class="yn">
+      <button class="ynb" id="s2y" onclick="p2('sim')">Sim</button>
+      <button class="ynb" id="s2n" onclick="p2('nao')">Não</button>
+    </div>
+    <div id="s2x" class="amt" style="display:none">
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <div class="slider-label" id="s2lbl">Quantos veículos?</div>
+          <div class="slider-input-box">
+            <input type="number" id="veI" value="1" min="1" max="50" oninput="onVeInput()">
+            <span class="unit">un</span>
+          </div>
+        </div>
+        <div class="slider-track">
+          <input type="range" class="custom-range" id="veSlider" min="1" max="50" value="1" oninput="onVeSlider()">
+        </div>
+        <div class="slider-ticks">
+          <span class="slider-tick">1</span>
+          <span class="slider-tick">10</span>
+          <span class="slider-tick">20</span>
+          <span class="slider-tick">35</span>
+          <span class="slider-tick">50</span>
+        </div>
+      </div>
+      <div><div class="cost-tag">Custo estimado: <span id="veC">R$ 1,00</span></div></div>
+    </div>
+    <button class="nxtbtn" id="s2nx" style="display:none" onclick="go(3)">Próximo <span class="ar">→</span></button>
+  </div>
+
+  <div class="step" id="s3">
+    <div class="step-tag">// 03 — Level</div>
+    <div class="step-q">Você precisa<br>de level?</div>
+    <div class="step-hint"><b>R$ 2,00</b> a cada 300 levels — qualquer valor aceito</div>
+    <div class="yn">
+      <button class="ynb" id="s3y" onclick="p3('sim')">Sim</button>
+      <button class="ynb" id="s3n" onclick="p3('nao')">Não</button>
+    </div>
+    <div id="s3x" class="amt" style="display:none">
+      <div class="slider-wrap">
+        <div class="slider-top">
+          <div class="slider-label">Level aproximado</div>
+          <div class="slider-input-box">
+            <input type="number" id="lvSliderDisplay" value="100" min="1" max="8000" readonly style="width:56px;color:var(--text-muted);font-size:13px;">
+            <span class="unit">lv</span>
+          </div>
+        </div>
+        <div class="slider-track">
+          <input type="range" class="custom-range" id="lvSlider" min="1" max="8000" value="100" oninput="onLvSlider()">
+        </div>
+        <div class="slider-ticks">
+          <span class="slider-tick">1</span>
+          <span class="slider-tick">2000</span>
+          <span class="slider-tick">4000</span>
+          <span class="slider-tick">6000</span>
+          <span class="slider-tick">8000</span>
+        </div>
+      </div>
+      <div class="level-precise">
+        <label>Level exato → (digite)</label>
+        <input type="number" id="lvI" value="100" min="1" max="8000" oninput="onLvInput()" placeholder="1 - 8000">
+        <div class="level-stepper">
+          <button onclick="adjLv(-100)" title="-100">−</button>
+          <button onclick="adjLv(100)" title="+100">+</button>
+        </div>
+      </div>
+      <div style="margin-top:12px"><div class="cost-tag">Custo estimado: <span id="lvC">R$ 2,00</span></div></div>
+    </div>
+    <button class="nxtbtn" id="s3nx" style="display:none" onclick="go(4)">Próximo <span class="ar">→</span></button>
+  </div>
+
+  <div class="step" id="s4">
+    <div class="step-tag">// 04 — Desbloqueios</div>
+    <div class="step-q">Você precisa de<br>desbloqueios?</div>
+    <div class="step-hint">Escolha o pacote ideal para sua conta</div>
+    <div class="yn">
+      <button class="ynb" id="s4y" onclick="p4('sim')">Sim</button>
+      <button class="ynb" id="s4n" onclick="p4('nao')">Não</button>
+    </div>
+    <div id="s4x" class="amt" style="display:none">
+      <div class="ucards">
+        <div class="uc" id="uc1" onclick="pu('essencial')">
+          <div class="uc-tick" id="tk1">✓</div>
+          <div class="uc-name">Essenciais</div>
+          <div class="uc-desc">Itens principais</div>
+          <div class="uc-price"><sup>R$</sup>3</div>
+        </div>
+        <div class="uc" id="uc2" onclick="pu('all')">
+          <div class="uc-tick" id="tk2">✓</div>
+          <div class="uc-name">Unlock-All</div>
+          <div class="uc-desc">Desbloquear tudo</div>
+          <div class="uc-price"><sup>R$</sup>7</div>
+        </div>
+      </div>
+    </div>
+    <button class="nxtbtn" id="s4nx" style="display:none" onclick="go(5)">Próximo <span class="ar">→</span></button>
+    <button class="nxtbtn" id="s4skip" style="display:none;margin-top:12px;background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff; box-shadow:none;" onclick="skipUpgrade()">Não quero upgrade <span class="ar">→</span></button>
+  </div>
+
+  <div class="step" id="s5">
+    <div class="step-tag">// 05 — Extras</div>
+    <div class="step-q">Quer adicionar<br>extras?</div>
+    <div class="step-hint">Selecione um ou mais itens — opcional</div>
+    <div class="extras-list">
+      <div class="extra-item" id="ex1" onclick="toggleExtra('unlocks')">
+        <div class="extra-cb" id="cb-unlocks">✓</div>
+        <div class="extra-info">
+          <div class="extra-name">Unlocks Exclusivos</div>
+          <div class="extra-desc">Itens e conquistas raras desbloqueadas</div>
+        </div>
+        <div class="extra-price"><sup>R$</sup>5</div>
+      </div>
+      <div class="extra-item" id="ex2" onclick="toggleExtra('trajes')">
+        <div class="extra-cb" id="cb-trajes">✓</div>
+        <div class="extra-info">
+          <div class="extra-name">Trajes Modded</div>
+          <div class="extra-desc">Roupas e looks exclusivos modificados</div>
+        </div>
+        <div class="extra-price"><sup>R$</sup>5</div>
+      </div>
+      <div class="extra-item" id="ex3" onclick="toggleExtra('corrida')">
+        <div class="extra-cb" id="cb-corrida">✓</div>
+        <div class="extra-info">
+          <div class="extra-name">Corrida &amp; Carregamento Modded</div>
+          <div class="extra-desc">Sessão de corrida e carregamento modificados</div>
+        </div>
+        <div class="extra-price"><sup>R$</sup>5</div>
+      </div>
+      <div class="extra-item" id="ex4" onclick="toggleExtra('status')">
+        <div class="extra-cb" id="cb-status">✓</div>
+        <div class="extra-info">
+          <div class="extra-name">Status Modificados</div>
+          <div class="extra-desc">KD, data de criação, playtime e mais</div>
+        </div>
+        <div class="extra-price"><sup>R$</sup>5</div>
+      </div>
+    </div>
+    <button class="nxtbtn" onclick="go(6)">Próximo <span class="ar">→</span></button>
+  </div>
+
+  <div class="step" id="s6">
+    <div class="step-tag">// 06 — Discord</div>
+    <div class="step-q">Você está em<br>nosso servidor?</div>
+    <div class="step-hint">Necessário para suporte e acompanhamento</div>
+    <div class="yn">
+      <button class="ynb" id="s6y" onclick="p6('sim')">Já estou</button>
+      <button class="ynb" id="s6n" onclick="p6('nao')">Ainda não</button>
+    </div>
+    <div id="s6x" class="amt" style="display:none">
+      <div class="disc-box">Entre no servidor e depois clique em <b>Já entrei</b> para continuar.</div>
+      <div class="disc-btns">
+        <a href="https://discord.com/invite/zCeFXBQdn3" target="_blank" class="disc-join">Clique para entrar</a>
+        <button class="nxtbtn" onclick="go(7)">Já entrei <span class="ar">→</span></button>
+      </div>
+    </div>
+    <button class="nxtbtn" id="s6nx" style="display:none" onclick="go(7)">Próximo <span class="ar">→</span></button>
+  </div>
+
+  <div class="step" id="s7">
+    <div class="step-tag">// 07 — Identificação</div>
+    <div class="step-q">Qual seu usuário<br>do Discord?</div>
+    <div class="step-hint">Ex: <b style="color:#fff">seuusuario</b> ou <b style="color:#fff">usuario#1234</b></div>
+    <input type="text" class="tinput" id="dusr" placeholder="Digite seu usuário..." oninput="cu()">
+    <button class="nxtbtn" id="s7nx" style="display:none" onclick="bsum()">Ver resumo <span class="ar">→</span></button>
+  </div>
+
+  <div class="step" id="s8">
+    <div class="step-tag">// 08 — Confirmar</div>
+    <div class="step-q">Resumo<br>do pedido</div>
+    <div class="step-hint">Revise os detalhes e valores antes de enviar</div>
+    <div class="sumlist" id="sumEl"></div>
+    <button class="nxtbtn wide" onclick="send()">Confirmar e enviar <span class="ar">→</span></button>
+  </div>
+
+  <div class="success" id="sucEl">
+    <div class="suc-tag">// Pedido confirmado</div>
+    <div class="suc-h">Pedido<br>enviado.</div>
+    <div class="suc-id"><small>ID DO PEDIDO</small><span id="sId"></span></div>
+    <div class="suc-txt">
+      Sua solicitação foi enviada à nossa equipe com todos os detalhes.<br>
+      Abra um ticket em nosso Discord e informe o ID <b id="sId2"></b> —<br>
+      nossa equipe irá analisar e efetuar a upagem se possível.
+    </div>
+    <a href="https://discord.com/invite/zCeFXBQdn3" target="_blank" class="disc-join" style="font-size:12px; padding:16px 32px; border-radius: 8px;">Abrir ticket no Discord</a>
+  </div>
+
+<!-- PAINEL FIXO DE BRINDES -->
+<div class="brinde-panel" id="brindePanel">
+  <div class="bp-title">🎁 Brindes</div>
+  <div class="bp-row" id="btr-30v"><span class="bp-mil">30M+</span><span class="bp-gift">5 veíc. + Unlock Ess.</span></div>
+  <div class="bp-row" id="btr-40"><span class="bp-mil">40M+</span><span class="bp-gift">Corrida Modded</span></div>
+  <div class="bp-row" id="btr-50"><span class="bp-mil">50M+</span><span class="bp-gift">10 veíc. + Trajes</span></div>
+  <div class="bp-row" id="btr-60"><span class="bp-mil">60M+</span><span class="bp-gift">Unlock-All</span></div>
+  <div class="bp-row" id="btr-70"><span class="bp-mil">70M+</span><span class="bp-gift">15 veículos</span></div>
+  <div class="bp-row" id="btr-90"><span class="bp-mil">90M+</span><span class="bp-gift">20 veículos</span></div>
+</div>
+
+</div>
+</div>
+
+<script>
+// PARTICLES
+(function(){
+  const cv=document.getElementById('pts'),ctx=cv.getContext('2d');
+  let W,H,pts=[];
+  function rs(){W=cv.width=innerWidth;H=cv.height=innerHeight}
+  rs();window.addEventListener('resize',rs);
+  for(let i=0;i<65;i++) pts.push({x:Math.random(),y:Math.random(),r:Math.random()*1.2+.4,op:Math.random()*.4+.1,sp:Math.random()*.0002+.0001});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.y-=p.sp;if(p.y<0){p.y=1;p.x=Math.random()}
+      ctx.beginPath();ctx.arc(p.x*W,p.y*H,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${p.op})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// INIT SLIDERS
+(function initSliders(){
+  ['diSlider','veSlider','lvSlider'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) updateSliderFill(el);
+  });
+})();
+
+const TOTAL_STEPS = 9;
+const D={
+  di:{q:null,v:1},
+  ve:{q:null,v:1},
+  lv:{q:null,v:100},
+  un:{q:null,t:null},
+  ex:{unlocks:false,trajes:false,corrida:false,status:false},
+  dc:{e:null},
+  usr:''
+};
+let cur=1;
+
+function fmt(n){return n.toFixed(2).replace('.',',')}
+
+function brindeVeiculos(){
+  if(D.di.q!=='sim') return 0;
+  if(D.di.v>=90) return 20;
+  if(D.di.v>=70) return 15;
+  if(D.di.v>=50) return 10;
+  if(D.di.v>=30) return 5;
+  return 0;
+}
+function brindeUnlock(){
+  if(D.di.q!=='sim') return null;
+  if(D.di.v>=60) return 'all';
+  if(D.di.v>=30) return 'essencial';
+  return null;
+}
+function brindeCorreida(){ return D.di.q==='sim' && D.di.v>=40; }
+function brindeTrajes(){ return D.di.q==='sim' && D.di.v>=50; }
+
+function extrasTotal(){
+  let t=0;
+  if(D.ex.unlocks) t+=5;
+  if(D.ex.trajes && !brindeTrajes()) t+=5;
+  if(D.ex.corrida && !brindeCorreida()) t+=5;
+  if(D.ex.status) t+=5;
+  return t;
+}
+
+function unTotal(){
+  if(D.un.q!=='sim') return 0;
+  const bu=brindeUnlock();
+  if(bu==='all') return 0; 
+  if(bu==='essencial') return D.un.t==='all' ? 4 : 0;
+  return D.un.t==='all' ? 7 : 3;
+}
+
+function vePreco(){return brindeVeiculos()>0 ? 0.5 : 1;}
+
+function tot(){
+  let t=0;
+  if(D.di.q==='sim') t+=D.di.v*.5;
+  if(D.ve.q==='sim') t+=D.ve.v*vePreco();
+  if(D.lv.q==='sim') t+=(D.lv.v/300)*2;
+  t+=unTotal();
+  t+=extrasTotal();
+  return t;
+}
+
+function updateBrindeTable(){
+  const v=D.di.q==='sim'?D.di.v:0;
+  const rows=[
+    {id:'btr-30v',thresh:30},{id:'btr-40',thresh:40},
+    {id:'btr-50',thresh:50},{id:'btr-60',thresh:60},
+    {id:'btr-70',thresh:70},{id:'btr-90',thresh:90},
+  ];
+  rows.forEach(r=>{
+    const el=document.getElementById(r.id);
+    if(el) el.classList.toggle('active', D.di.q==='sim' && v>=r.thresh);
+  });
+}
+
+function rc(){
+  D.di.v=Math.max(0,parseInt(document.getElementById('diI')?.value)||0);
+  if(D.di.q==='sim') D.di.v=Math.max(1,D.di.v);
+  const diInp=document.getElementById('diI');
+  if(diInp && D.di.q==='sim' && (parseInt(diInp.value)||0)<1){diInp.value=1;}
+  D.ve.v=Math.max(0,parseInt(document.getElementById('veI')?.value)||0);
+  D.lv.v=Math.max(0,parseInt(document.getElementById('lvI')?.value)||0);
+
+  const dc=document.getElementById('diC');if(dc)dc.textContent='R$ '+fmt(D.di.v*.5);
+  const vc=document.getElementById('veC');if(vc)vc.textContent='R$ '+fmt(D.ve.v*vePreco());
+  const lc=document.getElementById('lvC');if(lc)lc.textContent='R$ '+fmt((D.lv.v/300)*2);
+
+  const brinde=brindeVeiculos(), bu=brindeUnlock(), bc=brindeCorreida(), bt=brindeTrajes();
+  const badgeEl=document.getElementById('brindeVe'), badgeTxt=document.getElementById('brindeVeTxt');
+  if(badgeEl && badgeTxt){
+    const partes=[];
+    if(brinde>0) partes.push(`${brinde} veículos`);
+    if(bu==='all') partes.push('Unlock-All');
+    else if(bu==='essencial') partes.push('Unlock Essencial');
+    if(bc) partes.push('Corrida Modded');
+    if(bt) partes.push('Trajes Modded');
+    if(partes.length>0){
+      badgeTxt.textContent='Brindes: '+partes.join(' · ');
+      badgeEl.style.display='inline-flex';
+    } else {
+      badgeEl.style.display='none';
+    }
+  }
+  updateBrindeTable();
+
+  document.getElementById('tbv').textContent=fmt(tot());
+  if(cur===2) updateS2UI();
+}
+
+function openBrindePopup(){}
+function closeBrindePopup(){}
+function closeBrindePopupOutside(){}
+
+function updateSliderFill(el){
+  const pct=((el.value-el.min)/(el.max-el.min)*100).toFixed(1);
+  el.style.setProperty('--pct',pct+'%');
+}
+
+function onDiSlider(){
+  const s=document.getElementById('diSlider');
+  document.getElementById('diI').value=s.value;
+  updateSliderFill(s);
+  rc();
+}
+function onDiInput(){
+  const v=Math.min(100,Math.max(1,parseInt(document.getElementById('diI').value)||1));
+  const s=document.getElementById('diSlider');
+  s.value=v;
+  updateSliderFill(s);
+  rc();
+}
+function onVeSlider(){
+  const s=document.getElementById('veSlider');
+  document.getElementById('veI').value=s.value;
+  updateSliderFill(s);
+  rc();
+}
+function onVeInput(){
+  const v=Math.min(50,Math.max(1,parseInt(document.getElementById('veI').value)||1));
+  const s=document.getElementById('veSlider');
+  s.value=v;
+  updateSliderFill(s);
+  rc();
+}
+function onLvSlider(){
+  const s=document.getElementById('lvSlider');
+  const v=parseInt(s.value);
+  document.getElementById('lvI').value=v;
+  document.getElementById('lvSliderDisplay').value=v;
+  updateSliderFill(s);
+  rc();
+}
+function onLvInput(){
+  let v=parseInt(document.getElementById('lvI').value)||1;
+  if(v>8000){v=8000;document.getElementById('lvI').value=8000;}
+  if(v<1){v=1;document.getElementById('lvI').value=1;}
+  const s=document.getElementById('lvSlider');
+  s.value=v;
+  document.getElementById('lvSliderDisplay').value=v;
+  updateSliderFill(s);
+  rc();
+}
+function adjLv(d){
+  const inp=document.getElementById('lvI');
+  const v=Math.min(8000,Math.max(1,(parseInt(inp.value)||1)+d));
+  inp.value=v;
+  onLvInput();
+}
+function adj(k,d){
+  if(k==='di'){const inp=document.getElementById('diI');inp.value=Math.max(1,(parseInt(inp.value)||1)+d);onDiInput();}
+  else if(k==='ve'){const inp=document.getElementById('veI');inp.value=Math.max(1,(parseInt(inp.value)||1)+d);onVeInput();}
+}
+
+function go(n){
+  document.getElementById('s'+cur)?.classList.remove('on');
+
+  if(n===4){
+    const bu=brindeUnlock();
+    if(bu==='all'){
+      D.un.q='sim'; D.un.t='all';
+      cur=5;
+      document.getElementById('s5')?.classList.add('on');
+      document.getElementById('pgsteps').textContent='Etapa 5 de '+TOTAL_STEPS;
+      document.getElementById('pgfill').style.width=((5/TOTAL_STEPS)*100)+'%';
+      updateS5UI();
+      window.scrollTo({top:0,behavior:'smooth'});
+      return;
+    }
+  }
+
+  cur=n;
+  document.getElementById('s'+n)?.classList.add('on');
+  document.getElementById('pgsteps').textContent='Etapa '+n+' de '+TOTAL_STEPS;
+  document.getElementById('pgfill').style.width=((n/TOTAL_STEPS)*100)+'%';
+  
+  if(n===2) updateS2UI();
+  if(n===4) updateS4UI();
+  if(n===5) updateS5UI();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateS2UI(){
+  const brinde=brindeVeiculos();
+  const s2q=document.getElementById('s2q'), hint2=document.getElementById('s2hint'), s2lbl=document.getElementById('s2lbl'), veC=document.getElementById('veC');
+  if(brinde>0){
+    if(s2q) s2q.innerHTML='Quer veículos<br>extras?';
+    if(hint2) hint2.innerHTML=`🎁 Você já ganhou <b style="color:var(--primary)">${brinde} veículos de brinde</b> — quer ainda mais? <b>R$ 0,50</b> por veículo adicional`;
+    if(s2lbl) s2lbl.textContent='Quantos veículos extras?';
+  } else {
+    if(s2q) s2q.innerHTML='Você precisa<br>de veículos?';
+    if(hint2) hint2.innerHTML=`<b>R$ 1,00</b> por veículo adicionado`;
+    if(s2lbl) s2lbl.textContent='Quantos veículos?';
+  }
+  if(veC) veC.textContent='R$ '+fmt(D.ve.v*vePreco());
+}
+
+function sel(id,on){document.getElementById(id).classList.toggle('on',on)}
+
+function updateS4UI(){
+  const bu=brindeUnlock();
+  const s4q=document.querySelector('#s4 .step-q'), s4hint=document.querySelector('#s4 .step-hint'), skipBtn=document.getElementById('s4skip');
+  if(bu==='essencial'){
+    if(s4q) s4q.innerHTML='Quer fazer<br>upgrade?';
+    if(s4hint) s4hint.innerHTML='🎁 Você já ganhou o <b style="color:var(--primary)">Unlock Essencial</b> — quer o <b>Unlock-All</b> por apenas <b>R$ 4,00</b>?';
+    document.getElementById('uc1').style.display='none';
+    const uc2=document.getElementById('uc2');
+    uc2.querySelector('.uc-desc').textContent='Desbloquear tudo (upgrade)';
+    uc2.querySelector('.uc-price').innerHTML='<sup>R$</sup>4';
+    document.getElementById('s4x').style.display='block';
+    document.querySelector('#s4 .yn').style.display='none';
+    document.getElementById('s4nx').style.display='none';
+    if(skipBtn) skipBtn.style.display='inline-flex';
+    D.un.q='sim'; D.un.t=null;
+  } else {
+    if(s4q) s4q.innerHTML='Você precisa de<br>desbloqueios?';
+    if(s4hint) s4hint.textContent='Escolha o pacote ideal para sua conta';
+    document.getElementById('uc1').style.display='';
+    const uc2=document.getElementById('uc2');
+    uc2.querySelector('.uc-desc').textContent='Desbloquear tudo';
+    uc2.querySelector('.uc-price').innerHTML='<sup>R$</sup>7';
+    document.querySelector('#s4 .yn').style.display='';
+    document.getElementById('s4x').style.display='none';
+    document.getElementById('s4nx').style.display='none';
+    if(skipBtn) skipBtn.style.display='none';
+  }
+}
+
+function skipUpgrade(){
+  D.un.q='sim'; D.un.t='essencial';
+  go(5);
+}
+
+function updateS5UI(){
+  const bc=brindeCorreida(), bt=brindeTrajes();
+  
+  const ex3=document.getElementById('ex3'), ex3price=ex3?.querySelector('.extra-price'), ex3desc=ex3?.querySelector('.extra-desc');
+  if(bc){
+    if(ex3price) ex3price.innerHTML='<span style="color:var(--primary);font-size:14px">🎁 Brinde</span>';
+    if(ex3desc) ex3desc.textContent='Incluso de brinde no seu pedido';
+    D.ex.corrida=true; ex3?.classList.add('on'); ex3.style.pointerEvents='none'; ex3.style.borderColor='rgba(61,220,132,0.3)';
+  } else {
+    if(ex3price) ex3price.innerHTML='<sup>R$</sup>5';
+    if(ex3desc) ex3desc.textContent='Sessão de corrida e carregamento modificados';
+    ex3.style.pointerEvents=''; ex3.style.borderColor='';
+    if(D.ex.corrida && !bc){ D.ex.corrida=false; ex3?.classList.remove('on'); }
+  }
+  
+  const ex2=document.getElementById('ex2'), ex2price=ex2?.querySelector('.extra-price'), ex2desc=ex2?.querySelector('.extra-desc');
+  if(bt){
+    if(ex2price) ex2price.innerHTML='<span style="color:var(--primary);font-size:14px">🎁 Brinde</span>';
+    if(ex2desc) ex2desc.textContent='Incluso de brinde no seu pedido';
+    D.ex.trajes=true; ex2?.classList.add('on'); ex2.style.pointerEvents='none'; ex2.style.borderColor='rgba(61,220,132,0.3)';
+  } else {
+    if(ex2price) ex2price.innerHTML='<sup>R$</sup>5';
+    if(ex2desc) ex2desc.textContent='Roupas e looks exclusivos modificados';
+    ex2.style.pointerEvents=''; ex2.style.borderColor='';
+    if(D.ex.trajes && !bt){ D.ex.trajes=false; ex2?.classList.remove('on'); }
+  }
+}
+
+function p1(v){
+  D.di.q=v; sel('s1y',v==='sim'); sel('s1n',v==='nao');
+  document.getElementById('s1x').style.display=v==='sim'?'block':'none';
+  document.getElementById('s1nx').style.display='inline-flex';
+  if(v==='nao') D.di.v=0;
+  else{
+    const inp=document.getElementById('diI');
+    const s=document.getElementById('diSlider');
+    if(inp && (parseInt(inp.value)||0)<1){inp.value=1;if(s)s.value=1;}
+    if(s) updateSliderFill(s);
+    D.di.v=Math.max(1,parseInt(inp?.value)||1);
+  }
+  rc();
+}
+function p2(v){D.ve.q=v;sel('s2y',v==='sim');sel('s2n',v==='nao');document.getElementById('s2x').style.display=v==='sim'?'block':'none';document.getElementById('s2nx').style.display='inline-flex';if(v==='nao'){D.ve.v=0}rc()}
+function p3(v){D.lv.q=v;sel('s3y',v==='sim');sel('s3n',v==='nao');document.getElementById('s3x').style.display=v==='sim'?'block':'none';document.getElementById('s3nx').style.display='inline-flex';if(v==='nao'){D.lv.v=0}rc()}
+function p4(v){D.un.q=v;sel('s4y',v==='sim');sel('s4n',v==='nao');document.getElementById('s4x').style.display=v==='sim'?'block':'none';if(v==='nao'){D.un.t=null;document.getElementById('s4nx').style.display='inline-flex'}else{document.getElementById('s4nx').style.display='none'}rc()}
+function pu(t){
+  const bu=brindeUnlock();
+  if(bu==='essencial' && t==='essencial') return;
+  D.un.t=t; sel('uc1',t==='essencial'); sel('uc2',t==='all');
+  if(bu==='essencial'){
+    document.getElementById('s4nx').style.display='inline-flex';
+    const skipBtn=document.getElementById('s4skip');
+    if(skipBtn) skipBtn.style.display='none';
+  } else {
+    document.getElementById('s4nx').style.display='inline-flex';
+  }
+  rc();
+}
+
+function toggleExtra(key){
+  D.ex[key]=!D.ex[key];
+  const idMap={unlocks:1,trajes:2,corrida:3,status:4};
+  const item=document.getElementById('ex'+idMap[key]);
+  if(item) item.classList.toggle('on',D.ex[key]);
+  document.getElementById('tbv').textContent=fmt(tot());
+}
+
+function p6(v){D.dc.e=v;sel('s6y',v==='sim');sel('s6n',v==='nao');document.getElementById('s6x').style.display=v==='nao'?'block':'none';document.getElementById('s6nx').style.display=v==='sim'?'inline-flex':'none'}
+function cu(){D.usr=document.getElementById('dusr').value.trim();document.getElementById('s7nx').style.display=D.usr.length>0?'inline-flex':'none'}
+
+function bsum(){
+  D.usr=document.getElementById('dusr').value.trim();
+  const brinde=brindeVeiculos(), bu=brindeUnlock(), bc=brindeCorreida(), bt=brindeTrajes();
+
+  const veDesc = D.ve.q==='sim'
+    ? `${D.ve.v} ${brinde>0?'extra(s)':'veículo(s)'}${brinde>0?' + '+brinde+' brinde(s)':''}`
+    : brinde>0 ? brinde+' de brinde' : 'Não solicitado';
+  const vePrice = D.ve.q==='sim' ? 'R$ '+fmt(D.ve.v*vePreco()) : null;
+
+  let unDesc='Não solicitado', unPrice=null;
+  if(D.un.q==='sim'){
+    const tipo=D.un.t==='all'?'Unlock-All':'Essenciais';
+    const ut=unTotal();
+    if(bu==='all') unDesc=tipo+' (brinde)';
+    else if(bu==='essencial' && D.un.t==='all') unDesc='Unlock-All (Essencial brinde + R$ 4,00 dif.)';
+    else if(bu==='essencial') unDesc='Essenciais (brinde)';
+    else unDesc=tipo;
+    unPrice=ut>0?'R$ '+fmt(ut):null;
+  }
+
+  let corridaDesc='Não solicitado';
+  if(bc) corridaDesc='Corrida Modded (brinde)';
+  else if(D.ex.corrida) corridaDesc='Corrida Modded';
+
+  const R=[
+    ['Dinheiro', D.di.q==='sim'?D.di.v+' milhão(ões)':'Não solicitado', D.di.q==='sim'?'R$ '+fmt(D.di.v*.5):null],
+    ['Veículos', veDesc, vePrice],
+    ['Level', D.lv.q==='sim'?D.lv.v+' levels':'Não solicitado', D.lv.q==='sim'?'R$ '+fmt((D.lv.v/300)*2):null],
+    ['Desbloqueios', unDesc, unPrice],
+    ['Corrida', corridaDesc, (!bc && D.ex.corrida)?'R$ 5,00':null],
+    ['Trajes', bt?'Trajes Modded (brinde)':D.ex.trajes?'Trajes Modded':'Não solicitado', (!bt && D.ex.trajes)?'R$ 5,00':null],
+    ['Extras', D.ex.unlocks?'Unlocks Exclusivos':'Nenhum', D.ex.unlocks?'R$ 5,00':null],
+    ['Status', D.ex.status?'KD, Data, Playtime':'Não solicitado', D.ex.status?'R$ 5,00':null],
+    ['Discord', D.usr, null]
+  ];
+
+  document.getElementById('sumEl').innerHTML=
+    R.map(([k,v,p])=>`<div class="sumrow"><span class="srk">${k}</span><span style="display:flex;gap:14px;align-items:center"><span class="srv">${v}</span>${p?`<span class="srp">${p}</span>`:''}</span></div>`).join('')+
+    `<div class="sum-total"><span class="st-label">// Total estimado</span><span class="st-val">R$ ${fmt(tot())}</span></div>`;
+  go(8);
+}
+
+function gid(){const c='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';let i='WM-';for(let x=0;x<8;x++)i+=c[Math.floor(Math.random()*c.length)];return i}
+
+async function send(){
+  const id=gid(),t=tot();
+  const brinde=brindeVeiculos(), bu=brindeUnlock(), bc=brindeCorreida(), bt=brindeTrajes();
+
+  const veMsg = D.ve.q==='sim'
+    ? `${D.ve.v} ${brinde>0?'extra(s)':'veículo(s)'}${brinde>0?' + '+brinde+' brinde(s)':''} — R$ ${fmt(D.ve.v*vePreco())}`
+    : brinde>0 ? `${brinde} de brinde` : 'Não solicitado';
+
+  let unMsg='Não solicitado';
+  if(D.un.q==='sim'){
+    const ut=unTotal();
+    if(bu==='all') unMsg=`${D.un.t==='all'?'Unlock-All':'Essenciais'} (brinde)`;
+    else if(bu==='essencial'&&D.un.t==='all') unMsg=`Unlock-All (Essencial brinde + R$ 4,00 dif.)`;
+    else if(bu==='essencial') unMsg=`Essenciais (brinde)`;
+    else unMsg=`${D.un.t==='all'?'Unlock-All':'Essenciais'} — R$ ${fmt(ut)}`;
+  }
+
+  const extrasMsg=[];
+  if(D.ex.unlocks) extrasMsg.push('Unlocks Exclusivos (R$ 5,00)');
+  if(D.ex.trajes) extrasMsg.push('Trajes Modded'+(bt?' (brinde)':' (R$ 5,00)'));
+  else if(bt) extrasMsg.push('Trajes Modded (brinde)');
+  if(D.ex.corrida) extrasMsg.push('Corrida & Carregamento Modded'+(bc?' (brinde)':' (R$ 5,00)'));
+  else if(bc) extrasMsg.push('Corrida & Carregamento Modded (brinde)');
+  if(D.ex.status) extrasMsg.push('Status Modificados (R$ 5,00)');
+
+  // LOGICA DO RESUMO STRING
+  let resumoParts = [];
+  if(D.di.q === 'sim') resumoParts.push(`**${D.di.v} Milhões**`);
+  if(D.lv.q === 'sim') resumoParts.push(`**Level ${D.lv.v}**`);
+  if(D.un.q === 'sim') resumoParts.push(`**Unlock ${D.un.t==='all'?'All':'Essencial'}**`);
+  let totalVeiculos = (D.ve.q === 'sim' ? D.ve.v : 0) + brinde;
+  if(totalVeiculos > 0) resumoParts.push(`**${totalVeiculos} Veículos**`);
+  
+  if(D.ex.unlocks) resumoParts.push('Unlocks Exclusivos');
+  if(D.ex.trajes || bt) resumoParts.push('Trajes Modded');
+  if(D.ex.corrida || bc) resumoParts.push('Corrida Modded');
+  if(D.ex.status) resumoParts.push('Status Modificados');
+
+  let resumoFinal = resumoParts.length > 0 
+    ? "Você vai adicionar: " + resumoParts.join(', ') + "."
+    : "Você não adicionou nada neste pedido.";
+
+  // ESTRUTURA DO DISCORD EMBED
+  const embed = {
+    title: "🎮 NOVO PEDIDO CUSTOM — WINSTREAK MODZ",
+    color: 4054356, // Cor verde Winstreak (Hex: 3ddc84 convertido)
+    description: `**ID:** \`${id}\`\n**Usuário:** <@${D.usr}> / \`${D.usr}\`\n\n**🛒 Resumo do Pedido:**\n${resumoFinal}`,
+    fields: [
+      { name: "💰 Dinheiro", value: D.di.q==='sim' ? `${D.di.v} milhão(ões) — R$ ${fmt(D.di.v*.5)}` : 'Não solicitado', inline: false },
+      { name: "🚗 Veículos", value: veMsg, inline: false },
+      { name: "⭐ Level", value: D.lv.q==='sim' ? `${D.lv.v} levels — R$ ${fmt((D.lv.v/300)*2)}` : 'Não solicitado', inline: false },
+      { name: "🔓 Desbloqueios", value: unMsg, inline: false },
+      { name: "✨ Extras", value: extrasMsg.length>0 ? extrasMsg.join('\n') : 'Nenhum', inline: false },
+      { name: "💵 TOTAL ESTIMADO", value: `**R$ ${fmt(t)}**`, inline: false }
+    ],
+    timestamp: new Date().toISOString(),
+    footer: { text: "Winstreak System • Novo Pedido" }
+  };
+
+  document.getElementById('loader').classList.add('on');
+  try{
+    await fetch('https://discord.com/api/webhooks/1510453599350816849/OTqzmD3X5s1ADcCai32ywsmChuO6CkXbslSLigvTTnftQrIkB4zR6g0tUSAoB4WCeujB',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({content: '<@912555903235031050>', embeds: [embed]})
+    });
+  }catch(e){}
+  
+  document.getElementById('loader').classList.remove('on');
+  document.getElementById('s8').classList.remove('on');
+  document.getElementById('sucEl').classList.add('on');
+  document.getElementById('sId').textContent=id;
+  document.getElementById('sId2').textContent=id;
+  document.getElementById('pgfill').style.width='100%';
+  document.getElementById('pgsteps').textContent='Concluído';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
